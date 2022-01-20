@@ -111,8 +111,6 @@ void CAN_FIFO0_RXMessagePendingCallback(CAN_HandleTypeDef *_hcan);
 void ADC_ConversionCompleteCallback(ADC_HandleTypeDef *_hadc);
 void TIM14_TimeElapsedCallback(TIM_HandleTypeDef *_htim);
 
-static uint32_t byte_to_pwm(uint8_t byte);
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -166,7 +164,7 @@ int main(void)
   {
     /* USER CODE END WHILE */
 
-	/* USER CODE BEGIN 3 */
+    /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
@@ -508,10 +506,10 @@ void CAN_FIFO0_RXMessagePendingCallback(CAN_HandleTypeDef *_hcan)
 
 	htim3.Instance->CR1 |= TIM_CR1_UDIS;  //  Disable UEV Generation
 
-	htim3.Instance->CCR1 = byte_to_pwm(data[0]);
-	htim3.Instance->CCR2 = byte_to_pwm(data[1]);
-	htim3.Instance->CCR3 = byte_to_pwm(data[2]);
-	htim3.Instance->CCR4 = byte_to_pwm(data[3]);
+	htim3.Instance->CCR1 = (uint32_t) data[0];
+	htim3.Instance->CCR2 = (uint32_t) data[1];
+	htim3.Instance->CCR3 = (uint32_t) data[2];
+	htim3.Instance->CCR4 = (uint32_t) data[3];
 
 	htim3.Instance->CR1 &= ~TIM_CR1_UDIS;  //  Re-enable UEV Generation
 }
@@ -567,13 +565,6 @@ void TIM14_TimeElapsedCallback(TIM_HandleTypeDef *_htim)
 	{
 		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_15);
 	}
-}
-
-static uint32_t byte_to_pwm(uint8_t byte)
-{
-	float exact;
-	exact = (uint32_t)byte * (40.0F/255.0F) + 55.0F;
-	return (uint32_t) (exact + 0.5F); //rounds up the integer by adding 0.5
 }
 
 /* USER CODE END 4 */
