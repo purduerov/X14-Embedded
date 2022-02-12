@@ -327,7 +327,7 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 160 - 1;
+  htim3.Init.Prescaler = 32 - 1;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 500 - 1;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -343,7 +343,7 @@ static void MX_TIM3_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 75;
+  sConfigOC.Pulse = 375;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
@@ -358,6 +358,7 @@ static void MX_TIM3_Init(void)
   {
     Error_Handler();
   }
+  sConfigOC.Pulse = 125;
   if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
   {
     Error_Handler();
@@ -506,10 +507,10 @@ void CAN_FIFO0_RXMessagePendingCallback(CAN_HandleTypeDef *_hcan)
 
 	htim3.Instance->CR1 |= TIM_CR1_UDIS;  //  Disable UEV Generation
 
-	htim3.Instance->CCR1 = (uint32_t) data[0];
-	htim3.Instance->CCR2 = (uint32_t) data[1];
-	htim3.Instance->CCR3 = (uint32_t) data[2];
-	htim3.Instance->CCR4 = (uint32_t) data[3];
+	htim3.Instance->CCR1 = (uint32_t) data[0] + 250;
+	htim3.Instance->CCR2 = (uint32_t) data[1] + 250;
+	htim3.Instance->CCR3 = (uint32_t) data[2] + 250;
+	htim3.Instance->CCR4 = (uint32_t) data[3] + 250;
 
 	htim3.Instance->CR1 &= ~TIM_CR1_UDIS;  //  Re-enable UEV Generation
 }
